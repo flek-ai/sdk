@@ -3,17 +3,28 @@ import axios, { AxiosPromise, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import {
   PromiseCallback,
-  WormholeContextConfig,
-  WormholeSource,
-  WormholeOptions,
-  WormholeComponentCache,
-  WormholeTasks,
+  FlekTestWidgetContextConfig,
+  FlekTestWidgetSource,
+  FlekTestWidgetOptions,
+  FlekTestWidgetComponentCache,
+  FlekTestWidgetTasks,
 } from '../@types';
 
-import { Wormhole as BaseWormhole } from '../components';
-import { WormholeProps } from '../components/Wormhole';
+import { FlekTestWidget as BaseFlekTestWidget } from '../components';
 
-const globalName = '__WORMHOLE__';
+type FlekTestWidgetProps = {
+  readonly source: FlekTestWidgetSource;
+  readonly renderLoading?: () => JSX.Element;
+  readonly renderError?: (props: { readonly error: Error }) => JSX.Element;
+  readonly dangerouslySetInnerJSX?: boolean;
+  readonly onError?: (error: Error) => void;
+  readonly shouldOpenFlekTestWidget?: (
+    source: FlekTestWidgetSource,
+    options: FlekTestWidgetOptions
+  ) => Promise<React.Component>;
+};
+
+const globalName = '__FLEKTESTWIDGET__';
 
 const defaultGlobal = Object.freeze({
   require: (moduleId: string) => {
@@ -29,8 +40,8 @@ const defaultGlobal = Object.freeze({
 });
 
 const buildCompletionHandler = (
-  cache: WormholeComponentCache,
-  tasks: WormholeTasks,
+  cache: FlekTestWidgetComponentCache,
+  tasks: FlekTestWidgetTasks,
 ) => (uri: string, error?: Error): void => {
   const { [uri]: maybeComponent } = cache;
   const { [uri]: callbacks } = tasks;
@@ -67,7 +78,7 @@ const buildRequestOpenUri = ({
   shouldCreateComponent,
   shouldComplete,
 }: {
-  readonly cache: WormholeComponentCache,
+  readonly cache: FlekTestWidgetComponentCache,
   readonly buildRequestForUri: (config: AxiosRequestConfig) => AxiosPromise<string>;
   readonly verify: (response: AxiosResponse<string>) => Promise<boolean>;
   readonly shouldCreateComponent: (src: string) => Promise<React.Component>;
@@ -88,14 +99,14 @@ const buildRequestOpenUri = ({
     const Component = await shouldCreateComponent(data);
     Object.assign(cache, { [uri]: Component });
     return shouldComplete(uri);
-  } catch (e) {
+  } catch (e: unknown) {
     Object.assign(cache, { [uri]: null });
-    if (typeof e === 'string') {
-      return shouldComplete(uri, new Error(e));
-    } else if (typeof e.message === 'string') {
+    if (e instanceof Error && typeof e.message === 'string') {
+      return shouldComplete(uri, new Error(e.message));
+    } else if (e instanceof Error && typeof e.message === 'string') {
       return shouldComplete(uri, new Error(`${e.message}`));
     }
-    return shouldComplete(uri, e);
+    return shouldComplete(uri, e as Error);
   }
 };
 
@@ -104,15 +115,15 @@ const buildOpenUri = ({
   tasks,
   shouldRequestOpenUri,
 }: {
-  readonly cache: WormholeComponentCache;
-  readonly tasks: WormholeTasks;
+  readonly cache: FlekTestWidgetComponentCache;
+  readonly tasks: FlekTestWidgetTasks;
   readonly shouldRequestOpenUri: (uri: string) => void;
 }) => (uri: string, callback: PromiseCallback<React.Component>): void => {
   const { [uri]: Component } = cache;
   const { resolve, reject } = callback;
   if (Component === null) {
     return reject(
-      new Error(`[Wormhole]: Component at uri "${uri}" could not be instantiated.`)
+      new Error(`[FlekTestWidget]: Component at uri "${uri}" could not be instantiated.`)
     );
   } else if (typeof Component === 'function') {
     return resolve(Component);
@@ -137,7 +148,7 @@ const buildOpenString = ({
   return shouldCreateComponent(src);
 };
 
-const buildOpenWormhole = ({
+const buildOpenFlekTestWidget = ({
   shouldOpenString,
   shouldOpenUri,
 }: {
@@ -146,39 +157,39 @@ const buildOpenWormhole = ({
     uri: string,
     callback: PromiseCallback<React.Component>
   ) => void;
-}) => async (source: WormholeSource, options: WormholeOptions): Promise<React.Component> => {
+}) => async (source: FlekTestWidgetSource, options: FlekTestWidgetOptions): Promise<React.Component> => {
   const { dangerouslySetInnerJSX } = options;
   if (typeof source === 'string') {
     if (dangerouslySetInnerJSX === true) {
       return shouldOpenString(source as string);
     }
     throw new Error(
-      `[Wormhole]: Attempted to instantiate a Wormhole using a string, but dangerouslySetInnerJSX was not true.`
+      `[FlekTestWidget]: Attempted to instantiate a FlekTestWidget using a string, but dangerouslySetInnerJSX was not true.`
     );
   } else if (source && typeof source === 'object') {
-    const { uri } = source;
+    const uri = "http://192.168.0.154:3000/__mocks__/ContentContainerCard.jsx"
     if (typeof uri === 'string') {
       return new Promise<React.Component>(
         (resolve, reject) => shouldOpenUri(uri, { resolve, reject }),
       );
     }
   }
-  throw new Error(`[Wormhole]: Expected valid source, encountered ${typeof source}.`);
+  throw new Error(`[FlekTestWidget]: Expected valid source, encountered ${typeof source}.`);
 };
 
-export default function createWormhole({
+export default function createFlekTestWidget({
   buildRequestForUri = (config: AxiosRequestConfig) => axios(config),
   global = defaultGlobal,
   verify,
-}: WormholeContextConfig) {
+}: FlekTestWidgetContextConfig) {
   if (typeof verify !== 'function') {
     throw new Error(
-      '[Wormhole]: To create a Wormhole, you **must** pass a verify() function.',
+      '[FlekTestWidget]: To create a FlekTestWidget, you **must** pass a verify() function.',
     );
   }
 
-  const cache: WormholeComponentCache = {};
-  const tasks: WormholeTasks = {};
+  const cache: FlekTestWidgetComponentCache = {};
+  const tasks: FlekTestWidgetTasks = {};
 
   const shouldComplete = buildCompletionHandler(cache, tasks);
   const shouldCreateComponent = buildCreateComponent(global);
@@ -198,21 +209,21 @@ export default function createWormhole({
     shouldCreateComponent,
   });
 
-  const shouldOpenWormhole = buildOpenWormhole({
+  const shouldOpenFlekTestWidget = buildOpenFlekTestWidget({
     shouldOpenUri,
     shouldOpenString,
   });
 
-  const Wormhole = (props: WormholeProps) => (
-    <BaseWormhole {...props} shouldOpenWormhole={shouldOpenWormhole} />
+  const FlekTestWidget = (props: FlekTestWidgetProps) => (
+    <BaseFlekTestWidget {...props} shouldOpenFlekTestWidget={shouldOpenFlekTestWidget} />
   );
 
   const preload = async (uri: string): Promise<void> => {
-    await shouldOpenWormhole({ uri }, { dangerouslySetInnerJSX: false })
+    await shouldOpenFlekTestWidget({ uri }, { dangerouslySetInnerJSX: false })
   };
 
   return Object.freeze({
-    Wormhole,
+    FlekTestWidget,
     preload,
   });
 }

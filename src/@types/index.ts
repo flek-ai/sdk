@@ -5,23 +5,23 @@ export type PromiseCallback<T> = {
   readonly reject: (error: Error) => void;
 };
 
-export type WormholeSource = {
+export type FlekTestWidgetSource = {
   readonly uri: string;
 } | string;
 
-export type WormholeComponentCache = {
+export type FlekTestWidgetComponentCache = {
   readonly [uri: string]: React.Component | null;
 };
 
-export type WormholeTasks = {
+export type FlekTestWidgetTasks = {
   readonly [uri: string]: PromiseCallback<React.Component>[];
 };
 
-export type WormholeOptions = {
+export type FlekTestWidgetOptions = {
   readonly dangerouslySetInnerJSX: boolean;
 };
 
-export type WormholeContextConfig = {
+export type FlekTestWidgetContextConfig = {
   readonly verify: (response: AxiosResponse<string>) => Promise<boolean>;
   readonly buildRequestForUri?: (config: AxiosRequestConfig) => AxiosPromise<string>;
   readonly global?: any;

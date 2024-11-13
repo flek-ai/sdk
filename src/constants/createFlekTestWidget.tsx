@@ -51,7 +51,7 @@ const buildCompletionHandler = (
       return resolve(maybeComponent);
     }
     return reject(
-      error || new Error(`[Wormhole]: Failed to allocate for uri "${uri}".`)
+      error || new Error(`[FlekTestWidget]: Failed to allocate for uri "${uri}".`)
     );
   });
 };
@@ -65,7 +65,7 @@ const buildCreateComponent = (
   )(global);
   if (typeof Component !== 'function') {
     throw new Error(
-      `[Wormhole]: Expected function, encountered ${typeof Component}. Did you forget to mark your Wormhole as a default export?`
+      `[FlekTestWidget]: Expected function, encountered ${typeof Component}. Did you forget to mark your FlekTestWidget as a default export?`
     );
   }
   return Component;
@@ -91,10 +91,10 @@ const buildRequestOpenUri = ({
     });
     const { data } = result;
     if (typeof data !== 'string') {
-      throw new Error(`[Wormhole]: Expected string data, encountered ${typeof data}.`);
+      throw new Error(`[FlekTestWidget]: Expected string data, encountered ${typeof data}.`);
     }
     if (await verify(result) !== true) {
-      throw new Error(`[Wormhole]: Failed to verify "${uri}".`);
+      throw new Error(`[FlekTestWidget]: Failed to verify "${uri}".`);
     }
     const Component = await shouldCreateComponent(data);
     Object.assign(cache, { [uri]: Component });

@@ -35,7 +35,3 @@ export default function App() {
 ```
 
 That is it! It just takes 2 minutes to get started.
-
-
-### ✌️ License
-[**MIT**](./LICENSE)

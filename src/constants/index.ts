@@ -1,1 +1,1 @@
-export { default as createWormhole } from './createFlekTestWidget';
+export { default as createFlekTestWidget } from './createFlekTestWidget';

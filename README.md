@@ -1,7 +1,7 @@
 # 🌌 [`@flek-ai/flektest-sdk`](http://npmjs.com/package/@flek-ai/flektest-sdk)
 A `FlekTestWidget` component allows your [⚛️ **React Native**](https://reactnative.dev) application to import a widget on the flek platform and then test and deploy the widget instantly.
 
-[🎬 **Watch the Demo!**](https://www.youtube.com/watch?app=desktop&v=U2i5DFLuCFM)
+🎬 **Watch the Demo!**
 
 ### 🚀 Getting Started
 

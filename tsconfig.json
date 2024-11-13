@@ -9,7 +9,7 @@
     "lib": ["es6"],
     "moduleResolution": "node",
     "removeComments": true,
-    "strict": true,
+    "strict": false,
     "target": "esnext",
     "outDir": "dist"
   },

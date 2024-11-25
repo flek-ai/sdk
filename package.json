@@ -1,6 +1,6 @@
 {
   "name": "@flek-ai/sdk",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Instant testing for React Native",
   "main": "dist",
   "scripts": {
@@ -57,5 +57,8 @@
   "bugs": {
     "url": "https://github.com/flek-ai/sdk/issues"
   },
-  "homepage": "https://github.com/flek-ai/sdk#readme"
+  "homepage": "https://github.com/flek-ai/sdk#readme",
+  "publishConfig": {
+    "access": "public"
+  }
 }

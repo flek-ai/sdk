@@ -1,0 +1,169 @@
+{
+  "main": {
+    "id": "3819c7b885ca1094",
+    "type": "split",
+    "children": [
+      {
+        "id": "510064dbbd6337a4",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f6b650455d4da779",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "commands.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "commands"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "31636ae71c0faf7b",
+    "type": "split",
+    "children": [
+      {
+        "id": "25f9a81245b786ef",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "86b2cba176e00c9e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "5728b3000c5f9bbb",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "e1854eee1ce65523",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "8d2816a4166adb05",
+    "type": "split",
+    "children": [
+      {
+        "id": "66b062bf32c9a1f5",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9d2cfd902b0d98a8",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "commands.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for commands"
+            }
+          },
+          {
+            "id": "71d4027f7e1af158",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "commands.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from commands"
+            }
+          },
+          {
+            "id": "df4a73018d42de1d",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "75f5d5fb226bb472",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "commands.md"
+              },
+              "icon": "lucide-list",
+              "title": "Outline of commands"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "f6b650455d4da779",
+  "lastOpenFiles": [
+    "commands.md"
+  ]
+}

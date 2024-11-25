@@ -1,8 +1,8 @@
-import * as React from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
+import * as React from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
-import { FlekTestWidgetOptions, FlekTestWidgetSource } from '../@types';
-import { useForceUpdate } from '../hooks';
+import { FlekTestWidgetOptions, FlekTestWidgetSource } from "../@types";
+import { useForceUpdate } from "../hooks";
 
 export type FlekTestWidgetProps = {
   readonly source: FlekTestWidgetSource;
@@ -26,19 +26,21 @@ export default function FlekTestWidget({
   ...extras
 }: FlekTestWidgetProps): JSX.Element {
   const { forceUpdate } = useForceUpdate();
-  const [Component, setComponent] = React.useState<React.Component | null>(null);
+  const [Component, setComponent] = React.useState<React.Component | null>(
+    null
+  );
   const [error, setError] = React.useState<Error | null>(null);
   React.useEffect(() => {
     (async () => {
       try {
-        if (typeof shouldOpenFlekTestWidget === 'function') {
-          const Component = await shouldOpenFlekTestWidget(source, { dangerouslySetInnerJSX });
+        if (typeof shouldOpenFlekTestWidget === "function") {
+          const Component = await shouldOpenFlekTestWidget(source, {
+            dangerouslySetInnerJSX,
+          });
           return setComponent(() => Component);
         }
         throw new Error(
-          `[FlekTestWidget]: Expected function shouldOpenFlekTestWidget, encountered ${
-            typeof shouldOpenFlekTestWidget
-          }.`
+          `[FlekTestWidget]: Expected function shouldOpenFlekTestWidget, encountered ${typeof shouldOpenFlekTestWidget}.`
         );
       } catch (e) {
         setComponent(() => null);
@@ -57,9 +59,12 @@ export default function FlekTestWidget({
     onError,
   ]);
   const FallbackComponent = React.useCallback((): JSX.Element => {
-    return renderError({ error: new Error('[FlekTestWidget]: Failed to render.') });
+    return renderError({
+      error: new Error("[FlekTestWidget]: Failed to render."),
+    });
   }, [renderError]);
-  if (typeof Component === 'function') {
+
+  if (typeof Component === "function") {
     return (
       <ErrorBoundary FallbackComponent={FallbackComponent}>
         {/* @ts-ignore */}

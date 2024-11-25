@@ -105,3 +105,6 @@ dist
 
 # Distribution
 dist/
+
+# macos
+.DS_Store

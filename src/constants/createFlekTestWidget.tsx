@@ -261,8 +261,7 @@ export default function createFlekTestWidget({
       }
     }, [ref]);
     return (
-      <View style={{ borderWidth: 1, borderColor: "red" }} ref={ref}>
-        {/* <View> */}
+      <View ref={ref}>
         <BaseFlekTestWidget
           {...props}
           shouldOpenFlekTestWidget={shouldOpenFlekTestWidget}

@@ -1,6 +1,6 @@
 {
   "name": "@flek-ai/sdk",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Instant testing for React Native",
   "main": "dist",
   "scripts": {

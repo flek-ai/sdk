@@ -30,6 +30,7 @@ type FlekTestWidgetProps = {
 const globalName = "__FLEKTESTWIDGET__";
 
 const defaultGlobal = Object.freeze({
+  // @ts-ignore
   require: (moduleId: string) => {
     if (moduleId === "react") {
       // @ts-ignore
@@ -155,7 +156,7 @@ const buildOpenUri =
     return shouldRequestOpenUri(uri);
   };
 
-const buildOpenString =
+export const buildOpenString =
   ({
     shouldCreateComponent,
   }: {
@@ -181,6 +182,7 @@ const buildOpenFlekTestWidget =
     options: FlekTestWidgetOptions
   ): Promise<React.Component> => {
     const { dangerouslySetInnerJSX } = options;
+    console.log("source", source);
     if (typeof source === "string") {
       if (dangerouslySetInnerJSX === true) {
         return shouldOpenString(source as string);
@@ -189,13 +191,7 @@ const buildOpenFlekTestWidget =
         `[FlekTestWidget]: Attempted to instantiate a FlekTestWidget using a string, but dangerouslySetInnerJSX was not true.`
       );
     } else if (source && typeof source === "object") {
-      const uri =
-        source.uri ||
-        "http://192.168.0.156:3001/__widgets__/ContentContainerCard.jsx?transformer=sucrase";
-      // const uri =
-      // "http://192.168.0.156:4000/__mocks__/Wrapper.jsx?transformer=babel";
-      // const uri =
-      // "http://192.168.68.63:3001/__widgets__/ContentContainerCard.jsx?transformer=sucrase";
+      const uri = source.uri || "http://192.168.0.156:3002/currentWidget";
       if (typeof uri === "string") {
         return new Promise<React.Component>((resolve, reject) =>
           shouldOpenUri(uri, { resolve, reject })
@@ -246,23 +242,73 @@ export default function createFlekTestWidget({
 
   const FlekTestWidget = (props: FlekTestWidgetProps) => {
     const ref = React.useRef(null);
+    const [variant, setVariant] = React.useState<string | null>(null);
+    const [wsError, setWsError] = React.useState<Error | null>(null);
+    const widgetRef = React.useRef(null);
+
     React.useEffect(() => {
-      if (ref.current) {
-        console.log("ref", ref.current);
+      let ws: WebSocket;
+      try {
+        ws = new WebSocket(`ws://192.168.0.156:3002`);
+
+        ws.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            if (data.type === "variant") {
+              setVariant(data.data);
+            }
+          } catch (err) {
+            console.error("Error parsing WebSocket message:", err);
+            setWsError(err as Error);
+          }
+        };
+
+        ws.onerror = (error) => {
+          console.error("WebSocket error:", error);
+          setWsError(new Error("WebSocket connection failed"));
+        };
+
+        ws.onclose = () => {
+          console.log("WebSocket connection closed");
+        };
+      } catch (err) {
+        console.error("Error creating WebSocket:", err);
+        setWsError(err as Error);
+      }
+
+      return () => {
+        if (ws) {
+          ws.close();
+        }
+      };
+    }, []);
+
+    React.useEffect(() => {
+      if (ref.current && widgetRef.current && variant) {
+        // TODO: Make some mechanism to know when the widget is ready, some sort of websocket message
+        // that the widget is ready to take a screenshot.
         setTimeout(() => {
           captureRef(ref.current, {
-            format: "jpg",
-            quality: 0.8,
+            format: "png",
             result: "data-uri",
           }).then((uri) => {
-            // console.log("Image uri", uri);
+            axios.post(`http://192.168.0.156:3002/variants/${variant}/image`, {
+              imageUri: uri,
+            });
           });
-        }, 1000); // Adding a timeout of 1 second
+        }, 1000);
       }
-    }, [ref]);
+    }, [ref.current, widgetRef.current, variant]);
+
+    if (wsError && props.renderError) {
+      return props.renderError({ error: wsError });
+    }
+
     return (
-      <View ref={ref}>
+      <View ref={ref} style={{ backgroundColor: "black" }}>
         <BaseFlekTestWidget
+          widgetRef={widgetRef}
+          variant={variant}
           {...props}
           shouldOpenFlekTestWidget={shouldOpenFlekTestWidget}
         />

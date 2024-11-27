@@ -1,10 +1,12 @@
 import * as React from "react";
 import { ErrorBoundary } from "react-error-boundary";
-
 import { FlekTestWidgetOptions, FlekTestWidgetSource } from "../@types";
 import { useForceUpdate } from "../hooks";
+import { View } from "react-native";
 
 export type FlekTestWidgetProps = {
+  readonly variant: string;
+  readonly widgetRef: React.RefObject<any>;
   readonly source: FlekTestWidgetSource;
   readonly renderLoading?: () => JSX.Element;
   readonly renderError?: (props: { readonly error: Error }) => JSX.Element;
@@ -17,7 +19,9 @@ export type FlekTestWidgetProps = {
 };
 
 export default function FlekTestWidget({
+  variant,
   source,
+  widgetRef,
   renderLoading = () => <React.Fragment />,
   renderError = () => <React.Fragment />,
   dangerouslySetInnerJSX = false,
@@ -34,11 +38,16 @@ export default function FlekTestWidget({
     (async () => {
       try {
         if (typeof shouldOpenFlekTestWidget === "function") {
-          const Component = await shouldOpenFlekTestWidget(source, {
-            dangerouslySetInnerJSX,
-          });
+          console.log("variant", variant);
+          const Component = await shouldOpenFlekTestWidget(
+            { uri: `http://192.168.0.156:3002/widgets/${variant}` },
+            {
+              dangerouslySetInnerJSX,
+            }
+          );
           return setComponent(() => Component);
         }
+
         throw new Error(
           `[FlekTestWidget]: Expected function shouldOpenFlekTestWidget, encountered ${typeof shouldOpenFlekTestWidget}.`
         );
@@ -50,6 +59,7 @@ export default function FlekTestWidget({
       }
     })();
   }, [
+    variant,
     shouldOpenFlekTestWidget,
     source,
     setComponent,
@@ -67,8 +77,10 @@ export default function FlekTestWidget({
   if (typeof Component === "function") {
     return (
       <ErrorBoundary FallbackComponent={FallbackComponent}>
+        <View ref={widgetRef}>
         {/* @ts-ignore */}
-        <Component {...extras} />
+        <Component {...extras}/>
+        </View>
       </ErrorBoundary>
     );
   } else if (error) {

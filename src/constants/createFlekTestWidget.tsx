@@ -248,6 +248,8 @@ export default function createFlekTestWidget({
     const [wsError, setWsError] = React.useState<Error | null>(null);
     const widgetRef = React.useRef(null);
 
+    console.log("variant", variant);
+
     React.useEffect(() => {
       let ws: WebSocket;
       try {

@@ -3,6 +3,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { FlekTestWidgetOptions, FlekTestWidgetSource } from "../@types";
 import { useForceUpdate } from "../hooks";
 import { View } from "react-native";
+import { SERVER } from "../constants/server";
 
 export type FlekTestWidgetProps = {
   readonly variant: string;
@@ -40,7 +41,7 @@ export default function FlekTestWidget({
         if (typeof shouldOpenFlekTestWidget === "function") {
           console.log("variant", variant);
           const Component = await shouldOpenFlekTestWidget(
-            { uri: `http://192.168.0.156:3002/widgets/${variant}` },
+            { uri: `${SERVER}/widgets/${variant}` },
             {
               dangerouslySetInnerJSX,
             }

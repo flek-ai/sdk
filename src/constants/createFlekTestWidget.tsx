@@ -15,6 +15,8 @@ import { View } from "react-native";
 
 import { captureRef } from "react-native-view-shot";
 
+import { SERVER, SOCKET_SERVER } from "./server";
+
 type FlekTestWidgetProps = {
   readonly source: FlekTestWidgetSource;
   readonly renderLoading?: () => JSX.Element;
@@ -191,7 +193,7 @@ const buildOpenFlekTestWidget =
         `[FlekTestWidget]: Attempted to instantiate a FlekTestWidget using a string, but dangerouslySetInnerJSX was not true.`
       );
     } else if (source && typeof source === "object") {
-      const uri = source.uri || "http://192.168.0.156:3002/currentWidget";
+      const uri = source.uri || `${SERVER}/currentWidget`;
       if (typeof uri === "string") {
         return new Promise<React.Component>((resolve, reject) =>
           shouldOpenUri(uri, { resolve, reject })
@@ -249,7 +251,7 @@ export default function createFlekTestWidget({
     React.useEffect(() => {
       let ws: WebSocket;
       try {
-        ws = new WebSocket(`ws://192.168.0.156:3002`);
+        ws = new WebSocket(SOCKET_SERVER);
 
         ws.onmessage = (event) => {
           try {
@@ -292,7 +294,7 @@ export default function createFlekTestWidget({
             format: "png",
             result: "data-uri",
           }).then((uri) => {
-            axios.post(`http://192.168.0.156:3002/variants/${variant}/image`, {
+            axios.post(`${SERVER}/variants/${variant}/image`, {
               imageUri: uri,
             });
           });
